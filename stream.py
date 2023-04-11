@@ -59,18 +59,23 @@ elif SELECT == 'Database':
                 host="localhost",
                 user="srini",
                 password="password",
-                database="testing"
+                database="Bizcard"
                 )
                 cursor = conn.cursor()
-                df1 = pd.read_sql_query('SELECT * FROM Business_card', conn)
+                df1 = pd.read_sql_query('SELECT * FROM Business_Card', conn)
                 column_names = df1.columns.tolist()
-                options = st.selectbox('Search By Name',(column_names))
+                options = st.selectbox('Search :-',(column_names))
                 title = st.text_input(f'{options}')
-                df2 = pd.read_sql_query(f"""SELECT * FROM Business_card WHERE {options} = '{title}' """, conn)
-                if st.button('Apply'):
+                df2 = pd.read_sql_query(f"""SELECT * FROM Business_Card WHERE {options} = '{title}' """, conn)
+                cursor.execute(f"SELECT Image FROM Business_Card WHERE {options} = '{title}' ")
+                result = cursor.fetchone()
+                image_data = result[0]
+                image = Image.open(io.BytesIO(image_data))
+                if st.button('View Card'):
                     st.write(df2)
+                    st.image(image, caption='Image')
                 if st.button('View DB'):
-                    df = pd.read_sql_query('SELECT * FROM Business_card', conn)
+                    df = pd.read_sql_query('SELECT * FROM Business_Card', conn)
                     st.write(df)
                 conn.commit()
                 conn.close()
