@@ -5,17 +5,17 @@ import mysql.connector
 import pandas as pd
 from PIL import Image
 import io
+
+#----------This is to view full dataframe in pycharm-------
 desired_width = 320
 pd.set_option('display.width',desired_width)
 pd.set_option('display.max_columns',20)
-details = []
-dup = []
+#----------------------------------------------------------
+
 def extraction(file_path):
-
-
-    #for i in range(1,2):
             global Mobile_Number, Email_id, Website, Address, Alternate_number
-    #file_path = f'D:/python/Capstone_4/Images/{i}.png'
+            details = []
+            dup = []
             img = cv2.imread(file_path)
             reader = easyocr.Reader(['en'])
             result = reader.readtext(img)
@@ -24,29 +24,31 @@ def extraction(file_path):
             phone_regex = r'(?:(?<=\s)|(?<=^))(?:Phone:|Mobile:)?\s*[\+]?[1-9][0-9 .\-\(\)]{8,}[0-9]'
             address_regex = r'\b\d+\s+\w+\s+\w+\s*,?\s*\w*\.?\s*\w+,\s*\w+\s+\d+\b'
             pattern = r"^[A-Z][a-zA-Z]*\s[A-Z][a-zA-Z]*$"
-            #Fetching The Name
+            
+            
+            #---------------------------------------------------------------Fetching The Name--------------------------------------------------------------------->
             Name = result[0][1]
-            #Fetching The Designation
+            
+            #------------------------------------------------------------Fetching The Designation----------------------------------------------------------------->
             Designation = result[1][1]
-            count = 0
+            
+            #-------------------------------------------------------------Phone_Number Filetred------------------------------------------------------------------->
             for ele in result:
-                #Phone_Number Filetred
-
                 if re.findall(phone_regex,ele[1]):
                     ph_num = ''
                     Alternate_number = ''
                     ph_num += ele[1]
                     dup.append(ph_num)
-                    #count += 1
                     if len(dup)==1:
                         Mobile_Number = ph_num
                     elif len(dup)==2:
                         Alternate_number = ph_num
 
-                # mail-Id Filtered
+            #----------------------------------------------------------------mail-Id Filtered--------------------------------------------------------------------->
                 if '@' in ele[1]:
                     Email_id = ele[1]
 
+            #--------------------------------------------------------------------Website-------------------------------------------------------------------------->
             for el in tes:
                 if el.lower().startswith('www'):
                     Website = el
@@ -55,7 +57,7 @@ def extraction(file_path):
                         id = el+'.'+tes[ind]
                         Website = id
 
-            #Address Filter
+            #----------------------------------------------------------------Address Filter---------------------------------------------------------------------->
             for ele in res:
                 if ele[1].startswith('123 '):
                     Address = ele[1]
@@ -64,21 +66,26 @@ def extraction(file_path):
                     if address_match:
                         addresess = address_match.group(0)
                         Address  = addresess
-
+                        
+            #---------------------------------------------------------Appending the details in a list and convrting it into a dataframe-------------------------->
+            
             details.append({'Name':Name,'Designation':Designation,'Mobile_Number':Mobile_Number,'Alternate_Number':Alternate_number,'Email_id':Email_id,'Website':Website,'Address':Address})
             df = pd.DataFrame(details,columns=['Name','Designation','Mobile_Number','Alternate_Number', 'Email_id', 'Website', 'Address'])
-
+            
+            #---------------------------------------------------------Connecting with the DB--------------------------------------------------------------------->
             conn = mysql.connector.connect(
                 host="localhost",
                 user="srini",
                 password="password"
             )
-            # Create a cursor object
             cursor = conn.cursor()
-            # Check if the database exists
+            #------------------------------------------------------Check if the database exists----------------------------------------------------------------->
             sql = "SHOW DATABASES LIKE 'testing'"
             cursor.execute(sql)
             result = cursor.fetchone()
+            
+            #---------------------------------------------------------If it exists excutes 'if' loop------------------------------------------------------------>
+            
             if result:
                 conn = mysql.connector.connect(
                     host="localhost",
@@ -92,13 +99,15 @@ def extraction(file_path):
                   cursor = conn.cursor()
                   cursor.execute(sql, val)
                   conn.commit()
+            
+            #--------------------------------------------------------Else creates a DB and executes------------------------------------------------------------>
+            
             else:
                 conn = mysql.connector.connect(
                     host="localhost",
                     user="srini",
                     password="password"
                 )
-                # Create a cursor object
                 cursor = conn.cursor()
                 sql = "CREATE DATABASE testing"
                 cursor.execute(sql)
@@ -116,11 +125,3 @@ def extraction(file_path):
                     cursor = conn.cursor()
                     cursor.execute(sql, val)
                     conn.commit()
-
-            cursor.close()
-            conn.close()
-
-
-
-
-
