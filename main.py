@@ -80,7 +80,7 @@ def extraction(file_path):
             )
             cursor = conn.cursor()
             #------------------------------------------------------Check if the database exists----------------------------------------------------------------->
-            sql = "SHOW DATABASES LIKE 'testing'"
+            sql = "SHOW DATABASES LIKE 'Bizcard'"
             cursor.execute(sql)
             result = cursor.fetchone()
             
@@ -91,7 +91,7 @@ def extraction(file_path):
                     host="localhost",
                     user="srini",
                     password="password",
-                    database="testing"
+                    database="Bizcard"
                 )
                 for i,row in df.iterrows():
                   sql = ("""INSERT INTO Business_Card (Name, Designation,Mobile_Number,Alternate_Number, Email_id, Website, Address) VALUES(%s, %s,%s, %s, %s, %s,%s)""")
@@ -109,13 +109,13 @@ def extraction(file_path):
                     password="password"
                 )
                 cursor = conn.cursor()
-                sql = "CREATE DATABASE testing"
+                sql = "CREATE DATABASE Bizcard"
                 cursor.execute(sql)
                 conn = mysql.connector.connect(
                     host="localhost",
                     user="srini",
                     password="password",
-                    database="testing"
+                    database="Bizcard"
                 )
                 cursor = conn.cursor()
                 cursor.execute("CREATE TABLE Business_Card (ID  INTEGER  AUTO_INCREMENT PRIMARY  KEY, Name TEXT, Designation TEXT, Mobile_Number VARCHAR(20),Alternate_Number VARCHAR(20), Email_id TEXT,Website TEXT, Address TEXT)")
