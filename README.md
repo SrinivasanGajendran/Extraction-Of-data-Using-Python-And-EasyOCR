@@ -22,7 +22,7 @@ import io
 
 
 In main.py we have used the EasyOCR library to filter the data inside the ```def extraction(file_path)``` function which takes image as an parameter.
-We have filtered **Name, Designation, Mobile_Numbe, Alternate_Number, Mail_Id, Web_Address , Address, Image os the Business_Card**.
+We have filtered **Name, Designation, Mobile_Numbe, Alternate_Number, Mail_Id, Web_Address , Address, Image of the Business_Card**.
 Then we are storing it in a list and converting it into a dataframe.
 
 Next step, We are going to connect with the Mysql database uisng ```mysql-connector``` library in python. After connecting with the DB check for the **DB_Existence**
