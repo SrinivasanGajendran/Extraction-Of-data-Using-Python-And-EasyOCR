@@ -5,6 +5,7 @@ from PIL import Image
 import pandas as pd
 import tempfile
 import mysql.connector
+import os
 
 #-------------------------------------------Page_Config------------------------------------
 
